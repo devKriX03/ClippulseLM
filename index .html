@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>ClipPulse – Multi-creator clip studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@500;600&family=Fira+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{--bg:#120C0A;--card:#1D1512;--card2:#271B17;--bd:rgba(255,236,220,.09);--fg:#FFF7F0;--mut:#A8968C;--ac:#F97316;--ac2:#FB923C;--onac:#1A0F08;--live:#22C55E;--bad:#EF4444;--warn:#F59E0B;--r:16px;--sans:'Fira Sans',system-ui,-apple-system,Segoe UI,sans-serif;--mono:'Fira Code',ui-monospace,Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;min-height:100vh;background:radial-gradient(900px 500px at 90% -10%,rgba(249,115,22,.18),transparent 60%),var(--bg);color:var(--fg);font:400 16px/1.5 var(--sans);padding:max(12px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-right)) max(40px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left))}
+.wrap{max-width:760px;margin:0 auto;display:grid;gap:18px}
+h1,h2,b,.chip{font-family:var(--mono)}
+h1{font-size:clamp(22px,5vw,30px);line-height:1.2;margin:0 0 6px}
+h2{font-size:15px;margin:0 0 10px}
+.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+:focus-visible{outline:3px solid #fff;outline-offset:2px}
+button,.btn{font:600 15px var(--sans);min-height:44px;padding:0 16px;border-radius:12px;border:1px solid var(--bd);background:var(--card2);color:var(--fg);display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;text-decoration:none;transition:background-color .18s,opacity .18s,border-color .18s}
+button:hover,.btn:hover{border-color:var(--mut)}
+button:active{opacity:.8}
+button:disabled{opacity:.45;cursor:not-allowed}
+.primary{background:var(--ac);color:var(--onac);border-color:var(--ac)}
+.primary:hover{background:var(--ac2);border-color:var(--ac2)}
+.top{max-width:760px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{width:40px;height:40px;border-radius:12px;background:var(--ac);color:var(--onac);display:grid;place-items:center}
+.brand b{font-size:18px}
+.chip{font-size:13px;padding:8px 12px;border-radius:999px;background:var(--card2);border:1px solid var(--bd);color:var(--mut)}
+.card,.hero{background:var(--card);border:1px solid var(--bd);border-radius:var(--r);padding:clamp(16px,4vw,24px)}
+.sub{color:var(--mut);margin:0 0 18px;font-size:15px}
+.inputbar{display:flex;gap:8px;align-items:center;background:#120C0A;border:1px solid var(--bd);border-radius:14px;padding:6px 6px 6px 14px}
+.inputbar input,.field input,.field select{width:100%;min-width:0;border:1px solid var(--bd);background:#120C0A;color:var(--fg);font:400 16px var(--sans);min-height:46px;padding:10px 14px;border-radius:12px;outline:none}
+.inputbar input{border:0;background:transparent;padding:0}
+.inputbar input::placeholder,.field input::placeholder{color:#7A6A61}
+.err{color:#FCA5A5;font-size:14px;margin:10px 0 0;min-height:0}
+.foot{color:var(--mut);font-size:13px;text-align:center;margin:4px 0 0}
+details summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font:600 15px var(--mono)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field{display:grid;gap:6px;margin-top:10px}
+.field label,.lbl{font-weight:600;font-size:14px}
+.hint{color:var(--mut);font-size:13px;margin:0}
+.chk{display:flex;gap:12px;align-items:flex-start;font-weight:400;min-height:44px;margin-top:10px}
+.chk input{width:22px;min-height:22px;flex:none;margin-top:2px}
+.rail{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.rail::-webkit-scrollbar{display:none}
+.rail a{flex:none;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border-radius:999px;background:var(--card);border:1px solid var(--bd);color:var(--fg);text-decoration:none;font:600 14px var(--sans)}
+.rail i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.rail em{font-style:normal;color:var(--live);font-size:12px;font-weight:700}
+.streams{display:grid;gap:16px}
+.stream{background:var(--card);border:1px solid var(--bd);border-radius:var(--r);padding:16px;display:grid;gap:14px;scroll-margin-top:12px}
+.sh2{display:flex;align-items:center;gap:12px}
+.av{width:46px;height:46px;border-radius:50%;flex:none;display:grid;place-items:center;font:700 18px var(--mono);color:#1A0F08}
+.who{min-width:0;flex:1;display:grid}
+.cname{font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ttl{color:var(--mut);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;border:1px solid var(--bd);font:600 13px var(--mono);background:var(--card2);flex:none}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--mut)}
+.pill[data-s=live] .dot{background:var(--live);box-shadow:0 0 0 4px rgba(34,197,94,.25)}
+.pill[data-s=paused] .dot{background:var(--warn)}
+.pill[data-s=error],.pill[data-s=retrying] .dot,.pill[data-s=stopped] .dot{background:var(--bad)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.stat{background:var(--card2);border-radius:12px;padding:10px;min-width:0}
+.stat b{display:block;font-size:19px}
+.stat span{font-size:12px;color:var(--mut)}
+.cv{width:100%;height:140px;display:block;border-radius:12px;background:#0E0907}
+.acts2{display:flex;gap:8px;flex-wrap:wrap}
+.acts2 button{flex:1;min-width:110px}
+.msg{margin:0;font-size:14px;color:var(--mut)}
+.clips{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.clip{background:var(--card2);border-radius:14px;padding:12px 14px;display:grid;gap:8px}
+.clip .t{font:600 17px var(--mono)}
+.clip .m{color:var(--mut);font-size:13px}
+.clip .st{font-size:14px;margin:0;min-height:1.4em}
+.cacts{display:flex;gap:8px;flex-wrap:wrap}
+.cacts>*{flex:1;min-width:120px}
+.cacts a.dl{background:var(--ac);color:var(--onac);border-color:var(--ac)}
+.none,.empty{color:var(--mut);margin:0;font-size:14px}
+.empty{text-align:center;margin:20px 0}
+.vod{font-size:14px;color:var(--mut);margin:6px 0 0}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:999px;font-weight:600;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:30;max-width:90vw;text-align:center}
+#toast.on{opacity:1}
+@media (max-width:480px){.stats{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="bolt" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+<symbol id="link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></symbol>
+</defs></svg>
+
+<header class="top">
+  <div class="brand"><div class="logo"><svg class="i" aria-hidden="true"><use href="#bolt"/></svg></div><b>ClipPulse</b></div>
+  <span class="chip" id="quota">Quota ~0</span>
+</header>
+<p class="foot" id="conn" role="status">Not connected</p>
+
+<main class="wrap">
+  <details id="settings" class="card" open>
+    <summary>Settings (server link and password)</summary>
+    <div class="field"><label for="srv">Your server link</label><input id="srv" type="url" inputmode="url" autocomplete="off" placeholder="https://clippulselm.onrender.com"></div>
+    <div class="field"><label for="tok">Server password</label><input id="tok" type="password" autocomplete="off" placeholder="The TOKEN you set on the server"></div>
+    <label class="chk"><input id="own" type="checkbox">I own these streams or have permission to clip them.</label>
+    <div class="grid2" style="margin-top:12px">
+      <div class="field"><label for="sens">Sensitivity</label><select id="sens"><option value="1.6">High</option><option value="2.2" selected>Balanced</option><option value="3">Low</option></select></div>
+      <div class="field"><label for="before">Clip starts before spike (s)</label><input id="before" type="number" inputmode="numeric" min="5" max="120" value="25"></div>
+    </div>
+    <div class="field"><label for="after">Clip ends after spike (s)</label><input id="after" type="number" inputmode="numeric" min="3" max="60" value="10"></div>
+    <p class="hint" style="margin-top:10px">Changes save automatically. Your password is saved only on this phone.</p>
+  </details>
+
+  <section class="hero" aria-labelledby="h-home">
+    <h1 id="h-home">What do you want to clip today?</h1>
+    <p class="sub">Paste a live link for each creator. The server watches every stream at the same time, finds moments on its own, and saves the clips even when you close this page.</p>
+    <div class="inputbar">
+      <svg class="i" aria-hidden="true"><use href="#link"/></svg>
+      <input id="url" type="url" inputmode="url" autocomplete="off" placeholder="Paste a YouTube live link" aria-label="YouTube live link">
+      <button class="primary" id="add">Add creator</button>
+    </div>
+    <p class="err" id="addErr" role="alert"></p>
+  </section>
+
+  <nav class="rail" id="rail" aria-label="Creators"></nav>
+  <section class="streams" id="streams" aria-label="Creator streams"></section>
+  <p class="empty" id="empty">No creators yet. Paste a live link above to start.</p>
+
+  <section class="card" aria-labelledby="h-rec">
+    <h2 id="h-rec">Recorded video</h2>
+    <div class="field"><label for="rurl">YouTube video link</label><input id="rurl" type="url" inputmode="url" autocomplete="off" placeholder="Paste a normal (recorded) video link"></div>
+    <div class="grid2" style="margin-top:10px">
+      <div class="field"><label for="rfrom">From (seconds)</label><input id="rfrom" type="number" inputmode="numeric" min="0" value="0"></div>
+      <div class="field"><label for="rto">To (seconds, max 180 later)</label><input id="rto" type="number" inputmode="numeric" min="0" value="30"></div>
+    </div>
+    <div class="acts2" style="margin-top:12px">
+      <button class="primary" id="rcut">Make clip</button>
+      <button id="rscan">Scan whole video</button>
+    </div>
+    <div id="vods"></div>
+  </section>
+
+  <section class="card" aria-labelledby="h-hist">
+    <h2 id="h-hist">Clip history</h2>
+    <ul class="clips" id="history"></ul>
+    <p class="none" id="histNone">Clips from all creators and recorded videos appear here and stay in the list.</p>
+  </section>
+
+  <p class="foot">Only clip streams and videos you own or have permission to clip.</p>
+</main>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const COLORS=['#F97316','#38BDF8','#A78BFA','#22C55E','#F43F5E','#FACC15'];
+let ST={streams:[],vods:[],quota:0,queue:0},CLIPS=[];
+const store={g:k=>{try{return localStorage.getItem(k)||''}catch(e){return ''}},s:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};
+const cfg=()=>({srv:$('#srv').value.trim().replace(/\/$/,''),tok:$('#tok').value.trim(),own:$('#own').checked,before:+$('#before').value||25,after:+$('#after').value||10,sens:+$('#sens').value||2.2});
+
+function el(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e}
+function btn(t,fn,cls){const b=el('button',cls||'',t);b.onclick=fn;return b}
+function stat(v,l){const d=el('div','stat');d.append(el('b','',String(v)),el('span','',l));return d}
+function hms(s){s=Math.max(0,Math.round(s));const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return[h,m,x].map(v=>String(v).padStart(2,'0')).join(':')}
+function vidId(u){u=u.trim();const m=u.match(/(?:v=|youtu\.be\/|\/live\/|\/shorts\/|\/embed\/)([\w-]{11})/)||u.match(/^([\w-]{11})$/);return m?m[1]:''}
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('on'),2200)}
+function setConn(t,bad){const p=$('#conn');p.textContent=t;p.style.color=bad?'#FCA5A5':'var(--mut)'}
+function copy(t){
+  if(navigator.clipboard){navigator.clipboard.writeText(t).then(()=>toast('Copied')).catch(()=>fallbackCopy(t));return}
+  fallbackCopy(t);
+}
+function fallbackCopy(t){const a=document.createElement('textarea');a.value=t;document.body.append(a);a.select();document.execCommand('copy');a.remove();toast('Copied')}
+function needOwn(){if(!cfg().own){toast('Tick the permission box in Settings first');$('#settings').open=true;return false}return true}
+
+function loadSet(){
+  $('#srv').value=store.g('cp_srv');$('#tok').value=store.g('cp_tok');
+  $('#own').checked=store.g('cp_own')==='1';
+  ['before','after','sens'].forEach(k=>{if(store.g('cp_'+k))$('#'+k).value=store.g('cp_'+k)});
+}
+function saveSet(){
+  store.s('cp_srv',$('#srv').value.trim());store.s('cp_tok',$('#tok').value.trim());
+  store.s('cp_own',$('#own').checked?'1':'0');
+  ['before','after','sens'].forEach(k=>store.s('cp_'+k,$('#'+k).value));
+}
+
+async function call(method,path,body){
+  const c=cfg();
+  if(!c.srv)throw new Error('Add your server link in Settings first.');
+  const u=new URL(c.srv+path);u.searchParams.set('token',c.tok);
+  const opt={method};
+  if(body){opt.headers={'Content-Type':'application/json'};opt.body=JSON.stringify(body)}
+  const r=await fetch(u,opt);
+  const j=await r.json().catch(()=>({}));
+  if(!r.ok)throw new Error(j.error||('Server error ('+r.status+')'));
+  return j;
+}
+
+async function refresh(){
+  if(!cfg().srv){setConn('Add your server link in Settings to connect.',1);return}
+  try{
+    const[s,c]=await Promise.all([call('GET','/status'),call('GET','/clips')]);
+    ST=s;CLIPS=c.clips;
+    setConn('Connected. The server keeps working even when this page is closed.',0);
+    render();
+  }catch(e){setConn(e.message,1)}
+}
+
+async function addCreator(){
+  $('#addErr').textContent='';
+  const vid=vidId($('#url').value);
+  if(!vid){$('#addErr').textContent='That is not a YouTube link. Paste the full link.';return}
+  if(!needOwn())return;
+  const c=cfg();
+  try{
+    await call('POST','/watch',{url:vid,before:c.before,after:c.after,sens:c.sens});
+    $('#url').value='';toast('Watching. Moments will appear automatically.');refresh();
+  }catch(e){$('#addErr').textContent=e.message}
+}
+
+async function act(path,vid,needPerm){
+  if(needPerm&&!needOwn())return;
+  try{await call('POST',path,{vid});toast(path==='/scan'?'Scan started. Clips appear automatically.':'Done');refresh()}
+  catch(e){toast(e.message)}
+}
+
+async function retryCut(c){
+  if(!needOwn())return;
+  try{await call('POST','/cut',{vid:c.vid,start:c.start,end:c.end});toast('Retrying');refresh()}
+  catch(e){toast(e.message)}
+}
+
+function fileURL(c){const k=cfg();return k.srv+'/file/'+c.id+'?token='+encodeURIComponent(k.tok)}
+
+function clipItem(c){
+  const li=el('li','clip');
+  li.append(el('div','t',hms(c.start)+' – '+hms(c.end)));
+  const what=c.src==='ai'?'Voice + action scene':c.src==='chat'?'Chat spike':'Manual cut';
+  li.append(el('div','m',what+' · '+(c.end-c.start)+' s · '+c.creator));
+  const st=el('p','st');const acts=el('div','cacts');
+  if(c.status==='ready'){
+    const a=el('a','btn dl','Download MP4');a.href=fileURL(c);a.setAttribute('download','');
+    acts.append(a);st.textContent='✓ Ready';st.style.color='var(--ac2)';
+  }else if(c.status==='failed'){
+    st.textContent='✗ '+c.error;st.style.color='#FCA5A5';
+    acts.append(btn('Retry',()=>retryCut(c)));
+  }else{
+    st.textContent=c.status==='making'?'Making the MP4 on the server…':'Queued on the server…';
+  }
+  const w=el('a','btn','Watch moment');w.href='https://www.youtube.com/watch?v='+c.vid+'&t='+Math.max(0,Math.floor(c.start))+'s';w.target='_blank';w.rel='noopener';
+  acts.append(w,btn('Copy times',()=>copy(hms(c.start)+' - '+hms(c.end))));
+  li.append(st,acts);
+  return li;
+}
+
+function drawChart(cv,series,line,color){
+  const dpr=window.devicePixelRatio||1,w=cv.clientWidth,h=cv.clientHeight;
+  if(!w)return;
+  cv.width=w*dpr;cv.height=h*dpr;
+  const x=cv.getContext('2d');x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,w,h);
+  if(!series.length){x.fillStyle='#A8968C';x.font='14px Fira Sans, sans-serif';x.fillText('Waiting for chat…',12,h/2);return}
+  const pad=8,bw=(w-pad*2)/series.length,mx=Math.max(5,...series,line||0)*1.15;
+  x.fillStyle='#38BDF8';
+  series.forEach((v,i)=>{const bh=v/mx*(h-pad*2-10);x.fillRect(pad+i*bw+1,h-pad-bh,Math.max(bw-2,1),bh)});
+  if(line){
+    x.strokeStyle='#F59E0B';x.lineWidth=2;x.setLineDash([6,5]);
+    const y=h-pad-line/mx*(h-pad*2-10);x.beginPath();x.moveTo(pad,y);x.lineTo(w-pad,y);x.stroke();x.setLineDash([]);
+  }
+}
+
+function render(){renderQuota();renderRail();renderCreators();renderVods();renderHistory()}
+
+function renderQuota(){$('#quota').textContent='Quota ~'+ST.quota.toLocaleString()+' · queue '+ST.queue}
+
+function renderRail(){
+  const rail=$('#rail');rail.replaceChildren();
+  ST.streams.forEach((s,i)=>{
+    const a=el('a','',s.creator);a.href='#s'+s.vid;
+    const d=el('i');d.style.background=s.color||COLORS[i%6];
+    a.prepend(d);
+    if(s.status==='live')a.append(el('em','','LIVE'));
+    rail.append(a);
+  });
+}
+
+function renderCreators(){
+  const box=$('#streams');box.replaceChildren();
+  $('#empty').hidden=ST.streams.length>0;
+  const charts=[];
+  ST.streams.forEach((s,i)=>{
+    const col=s.color||COLORS[i%6];
+    const card=el('article','stream');card.id='s'+s.vid;
+    const av=el('div','av',(s.creator||'?').trim().charAt(0).toUpperCase());av.style.background=col;av.setAttribute('aria-hidden','true');
+    const who=el('div','who');who.append(el('b','cname',s.creator),el('span','ttl',s.title));
+    const pill=el('span','pill');pill.dataset.s=s.paused?'paused':s.status;
+    pill.append(el('span','dot'),el('span','',s.paused?'Paused':({live:'Live',retrying:'Retrying',stopped:'Stopped',error:'Error',connecting:'Connecting'})[s.status]||s.status));
+    const head=el('header','sh2');head.append(av,who,pill);
+    const series=s.series||[];const last=series.length?series[series.length-1]:0;
+    const mine=CLIPS.filter(c=>c.vid===s.vid);
+    const stats=el('div','stats');
+    stats.append(stat((last/5).toFixed(1),'msgs / sec'),stat(s.base==null?'…':s.base.toFixed(1),'normal'),stat(mine.length,'clips'),stat(s.polls*5,'quota'));
+    const cv=el('canvas','cv');cv.setAttribute('role','img');cv.setAttribute('aria-label','Chat messages per 5 seconds, last 5 minutes');
+    const acts=el('div','acts2');
+    acts.append(btn(s.paused?'Resume':'Pause',()=>act('/pause',s.vid,false)),
+                btn('Find best moments',()=>act('/scan',s.vid,true)),
+                btn('Stop',()=>act('/stop',s.vid,false)));
+    const msg=el('p','msg',s.err||s.note||'');if(s.err)msg.style.color='#FCA5A5';
+    const list=el('ul','clips');
+    mine.forEach(c=>list.append(clipItem(c)));
+    const none=el('p','none','No clips yet. Chat spikes and voice + action scans add clips here automatically.');none.hidden=mine.length>0;
+    card.append(head,stats,cv,acts,msg,list,none);
+    box.append(card);
+    charts.push([cv,series,s.line,col]);
+  });
+  charts.forEach(([cv,series,line,col])=>drawChart(cv,series,line,col));
+}
+
+function renderVods(){
+  const box=$('#vods');box.replaceChildren();
+  ST.vods.forEach(v=>{
+    const p=el('p','vod',v.creator+': scanned '+v.done+' of '+v.duration+' s · '+v.status+(v.err?' · '+v.err:''));
+    box.append(p);
+  });
+}
+
+function renderHistory(){
+  const ul=$('#history');ul.replaceChildren();
+  $('#histNone').hidden=CLIPS.length>0;
+  CLIPS.forEach(c=>ul.append(clipItem(c)));
+}
+
+async function makeClip(){
+  const url=$('#rurl').value.trim(),a=+$('#rfrom').value,b=+$('#rto').value;
+  const vid=vidId(url);
+  if(!vid){toast('Paste a YouTube video link');return}
+  if(!(b-a>=3&&b-a<=180)){toast('The clip must be 3 to 180 seconds long');return}
+  if(!needOwn())return;
+  try{await call('POST','/cut',{vid,start:a,end:b});toast('Clip queued. Download appears below when ready.');refresh()}
+  catch(e){toast(e.message)}
+}
+
+async function scanVideo(){
+  const vid=vidId($('#rurl').value);
+  if(!vid){toast('Paste a YouTube video link');return}
+  if(!needOwn())return;
+  try{await call('POST','/vod',{vid});toast('Scanning the video in the background.');refresh()}
+  catch(e){toast(e.message)}
+}
+
+$('#add').onclick=addCreator;
+$('#url').addEventListener('keydown',e=>{if(e.key==='Enter')addCreator()});
+$('#rcut').onclick=makeClip;
+$('#rscan').onclick=scanVideo;
+document.querySelectorAll('#settings input,#settings select').forEach(e=>e.addEventListener('change',()=>{saveSet();refresh()}));
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh()});
+
+loadSet();
+renderQuota();
+refresh();
+setInterval(refresh,6000);
+</script>
+</body>
+</html>
